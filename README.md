@@ -4,7 +4,7 @@
 <img width="384" alt="Screenshot 2025-01-20 at 9 51 00 AM" src="https://github.com/user-attachments/assets/537d413f-1351-4b16-9de5-f4fb9510cfb0" />
 </p>
 
-MARKETS INFLUENCE REALITY (or is at least a good representation of crowd knowledge). 
+MARKETS INFLUENCE REALITY (or is at least a good representation of crowd knowledge). <br/>
 Introducing the **perfect** blend of Polymarkets and Tinder!
 
 ## Motivation
