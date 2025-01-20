@@ -1,4 +1,4 @@
-# LOVE BETS
+# LOVE BETS ❤️🎰
 
 <p align="center">
 <img width="384" alt="Screenshot 2025-01-20 at 9 51 00 AM" src="https://github.com/user-attachments/assets/537d413f-1351-4b16-9de5-f4fb9510cfb0" />
