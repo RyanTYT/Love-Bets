@@ -1,0 +1,591 @@
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #ff6666;
+  color: #333;
+}
+
+.bettingPage {
+  max-width: 1000px;
+  margin: 20px auto;
+  padding: 20px;
+  background: linear-gradient(to bottom, #ffffff, #ffe6e6);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.bettingHeader {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.bettingHeader h1 {
+  font-size: 32px;
+  font-weight: bold;
+  color: #ff6666;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
+}
+
+.matchesList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.matchCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition:
+      transform 0.2s ease,
+      box-shadow 0.3s ease;
+}
+
+.matchCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.userContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.userAvatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+  border: 3px solid #ff6666;
+}
+
+.vs {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin: 0 20px;
+}
+
+.odds {
+  text-align: right;
+  font-size: 14px;
+  color: #555;
+}
+
+.odds p {
+  margin: 5px 0;
+}
+
+.odds strong {
+  color: #ff6666;
+  font-weight: bold;
+}
+
+.betButton {
+  padding: 10px 20px;
+  background: #0073b1;
+  color: white;
+  border: none;
+  border-radius: 24px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition:
+      background-color 0.3s ease,
+      transform 0.2s ease;
+}
+
+.betButton:hover {
+  background: #005582;
+  transform: scale(1.05);
+}
+
+/* Popup Styles */
+.popupOverlay {
+  width: 100%;
+  height: 100%;
+  background: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: none;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 50px;
+  border-radius: 0;
+}
+
+.popupContent {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  overflow-y: auto;
+  /* Enable scrolling */
+  position: relative;
+}
+
+.closePopupButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.closePopupButton:hover {
+  color: #ff6666;
+}
+
+.betOptions {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.betOptionButton {
+  padding: 10px 20px;
+  background: #0073b1;
+  color: white;
+  border: none;
+  border-radius: 24px;
+  font-size: 14px;
+  cursor: pointer;
+  transition:
+      background-color 0.3s ease,
+      transform 0.2s ease;
+}
+
+.betOptionButton:hover {
+  background: #005582;
+  transform: scale(1.05);
+}
+
+/* Bet input */
+.betInputField {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: #f9f9f9;
+}
+
+/* Graph Container */
+.charts {
+  margin: 20px 0;
+}
+
+.chartContainer {
+  margin-bottom: 20px;
+}
+
+.barChart {
+  margin-top: 10px;
+}
+
+.heartAnimation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+  position: relative;
+}
+
+.heart {
+  width: 50px;
+  height: 50px;
+  background-color: #ff6666;
+  transform: rotate(45deg);
+  position: absolute;
+  animation: pulse 1s infinite ease-in-out;
+}
+
+.heart::before,
+.heart::after {
+  content: "";
+  width: 50px;
+  height: 50px;
+  background-color: #ff6666;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.heart::before {
+  top: -25px;
+  left: 0;
+}
+
+.heart::after {
+  left: -25px;
+  top: 0;
+}
+
+.userAvatarHeart {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  margin: 0 20px;
+  object-fit: cover;
+  animation: float 1s infinite ease-in-out;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+      transform: scale(1) rotate(45deg);
+  }
+
+  50% {
+      transform: scale(1.2) rotate(45deg);
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+      transform: translateY(0);
+  }
+
+  50% {
+      transform: translateY(-10px);
+  }
+}
+
+/* Comments Section */
+.commentsSection {
+  margin-top: 20px;
+}
+
+.commentsSection h3 {
+  margin-bottom: 10px;
+}
+
+.comments {
+  max-height: 150px;
+  overflow-y: auto;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.comment {
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.comment:last-child {
+  border-bottom: none;
+}
+
+.comment strong {
+  color: #0073b1;
+}
+
+/* Scrollbar styles for comments */
+.comments::-webkit-scrollbar {
+  width: 8px;
+}
+
+.comments::-webkit-scrollbar-thumb {
+  background-color: #cccccc;
+  border-radius: 8px;
+}
+
+.comments::-webkit-scrollbar-thumb:hover {
+  background-color: #aaaaaa;
+}
+
+/* Ticker Bar */
+.tickerBar {
+  background-color: #0073b1;
+  color: white;
+  padding: 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+}
+
+.tickerBar span {
+  display: inline-block;
+  margin-right: 50px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.tickerItem {
+  animation: tickerMove 30s linear infinite;
+}
+
+@keyframes tickerMove {
+  from {
+      transform: translateX(100%);
+  }
+
+  to {
+      transform: translateX(-100%);
+  }
+}
+
+/* Leaderboard */
+.leaderboard {
+  margin: 20px 0;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.leaderboard h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #0073b1;
+}
+
+.leaderboardItem {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.leaderboardItem:last-child {
+  border-bottom: none;
+}
+
+.leaderboardItem span {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.loginContainer {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+}
+
+.leftPos {
+  transform: translateX(-100%);
+}
+
+.midPos {
+  transform: translateX(0%);
+}
+
+.rightPos {
+  transform: translateX(150%);
+}
+.full {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Tabs Container */
+.tabsContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  width: 100%;
+  border: 1px solid #a16666;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 50px; /* Adjust height to fit visually */
+}
+
+/* Individual Tab */
+.tab {
+  flex: 1; /* Equal space for each tab */
+  text-align: center;
+  line-height: 50px; /* Center text vertically */
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  background-color: white; /* Default inactive tab */
+  border-right: 1px solid #ff6666; /* Separator between tabs */
+  color: #ff6666;
+}
+
+.tab:last-child {
+  border-right: none; /* Remove the border for the last tab */
+}
+
+.tab:hover {
+  background-color: #ffe6e6; /* Subtle hover effect */
+}
+
+.tab_active {
+  background-color: #ff6666; /* Active tab background */
+  color: white;
+}
+
+
+/* Matches Card */
+.matchCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  border: 2px solid #ffe6e6; /* Border for consistency */
+}
+
+.matchCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* User Container */
+.userContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* User Avatar */
+.userAvatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+  border: 3px solid #ff6666;
+}
+
+/* VS Text */
+.vs {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ff6666;
+  margin: 0 20px;
+}
+
+/* Odds Section */
+.odds {
+  text-align: right;
+  font-size: 14px;
+  color: #555;
+}
+
+.odds p {
+  margin: 5px 0;
+}
+
+.odds strong {
+  color: #ff6666;
+  font-weight: bold;
+}
+
+/* Bet Button */
+.betButton {
+  padding: 10px 20px;
+  background: #0073b1;
+  color: white;
+  border: none;
+  border-radius: 24px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.betButton:hover {
+  background: #005582;
+  transform: scale(1.05);
+}
+
+.betBreakButton{
+  padding: 10px 20px;
+  background: #ee3737;
+  color: white;
+  border: none;
+  border-radius: 24px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.betBreakButton:hover {
+  background: #ff0000;
+  transform: scale(1.05);
+}
+
+.betNoBreakButton{
+  padding: 10px 20px;
+  background: #10a110;
+  color: white;
+  border: none;
+  border-radius: 24px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.betNoBreakButton:hover {
+  background: #03da03;
+  transform: scale(1.05);
+}
+
+.scrollable {
+  overflow-y: auto; /* Enable vertical scrolling */
+  max-height: calc(100vh - 100px); /* Adjust height to leave space for other elements */
+  padding-right: 10px; /* Add some padding for a better appearance */
+  scrollbar-width: thin; /* For modern browsers: makes the scrollbar thinner */
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #ffe6e6; /* Light pink to match the theme */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ff6666; /* Pink for the thumb */
+  border-radius: 10px; /* Rounded corners */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ff4d4d; /* Slightly darker pink on hover */
+}
+
+.moneyBox {
+  margin-top: 10px;
+  background-color: #f4f4f4;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}

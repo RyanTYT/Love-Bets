@@ -1,0 +1,50 @@
+.menuContainer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 0;
+    z-index: 100;
+}
+
+.menuItem {
+    font-size: 18px;
+    color: #333;
+    width: 100%;
+    cursor: pointer;
+    text-align: center;
+}
+
+.menuItem:hover {
+    color: #ff6666;
+}
+
+.menuItem i {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.full {
+    display: flex;
+    position: relative;
+    justify-content: center; /* Centers horizontally */
+    align-items: center;     /* Centers vertically */
+    height: 100vh;           /* Full viewport height */
+    width: 100%;
+    max-width: 500px;
+    background-color: #f0f0f0; /* Optional: background color for the page */
+    overflow: hidden;
+}
+
+.active {
+    color: #ff6666;
+}
+
+.activeIcon {
+    color: #ff6666;
+}

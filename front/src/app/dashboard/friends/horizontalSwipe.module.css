@@ -1,0 +1,72 @@
+/* Container for the buttons on left and right swipe */
+.swipeButtons {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 20%; /* Set the width to 10% */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: transparent;
+    z-index: -1;
+    transition: transform 0.3s ease;
+}
+
+/* Button styles */
+.swipeButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%; /* Make buttons fill 100% of the swipeButtons container */
+    height: 100%; /* Fill half the height of the container */
+    margin: 0;
+    padding: 0 20px;
+    border: none;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Remove button specific style (right swipe) */
+.removeButton {
+    background-color: #e74c3c; /* Red background */
+}
+
+/* Matchmake and Message buttons (left swipe) */
+.matchmakeButton {
+    background-color: #3498db; /* Blue background */
+}
+
+.messageButton {
+    background-color: #2ecc71; /* Green background */
+}
+
+/* Hover effect for buttons */
+.swipeButton:hover {
+    transform: scale(1.05); /* Slight scale on hover for a nice effect */
+}
+
+/* Left swipe buttons container */
+.swipeButtonsLeft {
+    transform: translateX(-100%); /* Hidden off-screen initially */
+}
+
+/* Right swipe buttons container */
+.swipeButtonsRight {
+    transform: translateX(100%); /* Hidden off-screen initially */
+}
+
+/* Revealed state for left swipe */
+.swipeButtonsLeftRevealed {
+    transform: translateX(200%); /* Move into view when swiped */
+}
+
+/* Revealed state for right swipe */
+.swipeButtonsRightRevealed {
+    transform: translateX(-200%); /* Move into view when swiped */
+}
+

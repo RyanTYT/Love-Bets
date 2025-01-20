@@ -1,0 +1,325 @@
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ff6666;
+    color: #333;
+}
+
+.friendsPage {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.friendsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.friendsHeader h1 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ff6666;
+    margin: 0;
+}
+
+.addFriendBtn {
+    padding: 10px 20px;
+    background-color: #0073b1;
+    color: white;
+    border: none;
+    border-radius: 24px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.addFriendBtn:hover {
+    background-color: #005582;
+}
+
+.searchContainer {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.searchBar {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px 20px;
+    border: 1px solid #ddd;
+    border-radius: 24px;
+    font-size: 16px;
+    outline: none;
+    transition: box-shadow 0.2s ease;
+}
+
+.searchBar:focus {
+    box-shadow: 0 0 8px rgba(0, 115, 177, 0.5);
+}
+
+.friendsList,
+.searchResults {
+  max-height: calc(100vh - 200px); /* Adjust based on the header size */
+  overflow-y: auto; /* Add vertical scrolling */
+  scrollbar-width: thin; /* Firefox scrollbar */
+  scrollbar-color: #ff6666 #fff; /* Thumb and track color */
+}
+
+.friendCard {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition:
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+    height: fit-content;
+}
+
+.friendAvatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
+}
+
+.friendInfo {
+    flex: 1;
+    text-align: left;
+}
+
+.friendInfo h2 {
+    font-size: 18px;
+    margin: 0 0 5px 0;
+    color: #333;
+}
+
+.friendInfo p {
+    font-size: 14px;
+    margin: 0;
+    color: #555;
+}
+
+.friendLocation {
+    color: #0073b1;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.actionButtons {
+    display: flex;
+    gap: 10px;
+}
+
+.removeBtn {
+    padding: 8px 16px;
+    background-color: #ff6666;
+    color: white;
+    border: none;
+    border-radius: 24px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.removeFriendBtn:hover {
+    background-color: #a80018;
+}
+
+.messageBtn {
+    padding: 8px 16px;
+    background-color: #0073b1;
+    color: white;
+    border: none;
+    border-radius: 24px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.messageBtn:hover {
+    background-color: #005582;
+}
+
+/* Floating button */
+.addFriendButton {
+    position: fixed;
+    bottom: 70px;
+    right: calc(50% - 250px + 20px);
+    /* Centers the button dynamically */
+    width: 60px;
+    height: 60px;
+    background-color: #0073b1;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Popup styles */
+.popupOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popupContent {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    position: relative;
+}
+
+.closePopupButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    /* Adjust the color as needed */
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.closePopupButton:hover {
+    color: #0073b1;
+    /* Change color on hover */
+}
+
+.addFriendPopupButton {
+    /* position: absolute; */
+    top: 0;
+    right: 0;
+    height: 100%;
+    padding: 8px 16px;
+    background-color: #0073b1;
+    color: white;
+    border: none;
+    border-radius: 24px;
+    font-size: 14px;
+    /* border-top-left-radius: 0; */
+    /* border-bottom-left-radius: 0; */
+}
+
+.addFriendPopupButton:hover {
+    background-color: #005582;
+    scale: 1.1;
+}
+
+/* Search bar container styles */
+.searchBarContainer {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* Search bar styling */
+.searchBar {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ffcccc;
+    border-radius: 4px;
+    background-color: #ffe6e6;
+    /* Matches the light red background */
+    color: #333;
+    /* Dark text for readability */
+    font-size: 14px;
+    outline: none;
+    transition: box-shadow 0.2s ease;
+}
+
+.searchBar::placeholder {
+    color: #ff9999;
+    /* Light red placeholder text */
+}
+
+/* Focused search bar styling */
+.searchBar:focus {
+    box-shadow: 0 0 8px rgba(255, 77, 77, 0.6);
+    /* Light red glow effect */
+}
+
+/* Search button styling */
+.searchButton {
+    padding: 8px 16px;
+    background-color: #ff6666;
+    /* Matches theme red */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.searchButton:hover {
+    background-color: #e63946;
+    /* Darker red on hover */
+}
+
+.loginContainer {
+    height: 100%;
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.loginContainer {
+    position: absolute;
+    transition: transform 0.5s ease;
+}
+
+.loginContainer .logo,
+.loginContainer .subtitle {
+    text-align: left;
+}
+
+.leftPos {
+    transform: translateX(-100%);
+}
+
+.midPos {
+    transform: translateX(0%);
+}
+
+.rightPos {
+    transform: translateX(100%);
+}
+
+.full {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.searchResults {
+    height: 100%;
+    overflow: scroll;
+}
