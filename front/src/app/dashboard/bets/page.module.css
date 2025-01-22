@@ -554,10 +554,10 @@ body {
 }
 
 .scrollable {
+    width: 100%;
   overflow-y: auto; /* Enable vertical scrolling */
   max-height: calc(100vh - 100px); /* Adjust height to leave space for other elements */
-  padding-right: 10px; /* Add some padding for a better appearance */
-  scrollbar-width: thin; /* For modern browsers: makes the scrollbar thinner */
+  padding-bottom: 150px;
 }
 
 /* Scrollbar Styling */

@@ -9,15 +9,15 @@ function App() {
 
     const [username, setUsername] = useState("");
     const [gender, setGender] = useState("");
-    const [age, setAge] = useState();
+    const [age, setAge] = useState(0);
     const [userLocation, setUserLocation] = useState("");
-    const [phone, setPhone] = useState();
+    const [phone, setPhone] = useState(null);
     const [dob, setDOB] = useState("");
     const [detailPageNo, setDetailPageNo] = useState(1);
 
     const [locPref, setLocPref] = useState("");
-    const [lowerAgePref, setLowerAgePref] = useState();
-    const [upperAgePref, setUpperAgePref] = useState();
+    const [lowerAgePref, setLowerAgePref] = useState(0);
+    const [upperAgePref, setUpperAgePref] = useState(0);
     const [genderPref, setGenderPref] = useState("");
 
     const [hobbies, setHobbies] = useState("");
@@ -47,49 +47,34 @@ function App() {
 
             hobbies: hobbies,
             biography: bio,
-            profile_pic: "",
+            // profile_pic: "",
             relationship_status: relationship_status,
         };
-        // Create a FormData object
-        const formData = new FormData();
+        try {
+            const email = localStorage.getItem("email");
+            delete details["profile_pic"];
+            const response = await fetch(
+                `http://127.0.0.1:5000/users/edit/${email}`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(details), // No need to set `Content-Type` manually
+                },
+            );
 
-        // Append all the form fields
-        for (const key in details) {
-            formData.append(key, details[key]);
-        }
-
-        // Append the file if it exists
-        console.log("ok")
-            //console.log(selectedFile)
-       /* if (selectedFile) {
-            formData.append("profile_pic", selectedFile);
-        }*/
-
-            try {
-                const email = localStorage.getItem("email");
-                console.log(details);
-                const response = await fetch(
-                    `http://127.0.0.1:5000/users/edit/${email}`,
-                    {
-                        method: "PATCH",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(details), // No need to set `Content-Type` manually
-                    }
-                );
-        
-                if (!response.ok) {
-                    console.log(response);
-                    // throw new Error("Failed to update user details");
-                }
-                toast.success("Details Updated! Welcome to the Dungeon!");
-                router.push("/dashboard/home");
-            } catch (error) {
-                console.error("Error checking user existence:", error);
-                return false;
+            if (!response.ok) {
+                console.log(response);
+                // throw new Error("Failed to update user details");
             }
-        };
+            toast.success("Details Updated! Welcome to the Dungeon!");
+            router.push("/dashboard/home");
+        } catch (error) {
+            console.error("Error checking user existence:", error);
+            return false;
+        }
+    };
 
     const [detail_page_1_pos, setDetailPage1Pos] = useState("mid-pos");
     const [detail_page_2_pos, setDetailPage2Pos] = useState("right-pos");
@@ -204,7 +189,7 @@ function App() {
                         type="number"
                         id="location"
                         placeholder="Enter your Phone Number"
-                        value={phone}
+                        value={phone === null ? "" : phone}
                         onChange={(e) => setPhone(e.target.value)}
                         className={styles.inputField}
                         required

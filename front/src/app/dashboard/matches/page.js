@@ -62,7 +62,6 @@ const FriendsPage = () => {
         }
 
         const data = await response.json();
-        console.log(data);
         setSearchResults(data); // Store the matches data
       } catch (error) {
         console.error("Error fetching matches:", error);
@@ -138,7 +137,6 @@ const FriendsPage = () => {
       }
 
       const data = await response.json();
-      console.log("Action result:", data);
 
       if (isMatchMake) {
         toast.success(`Matchmade ${friend.name} successfully!`);
@@ -205,7 +203,7 @@ const FriendsPage = () => {
 
   const friendsList = (
     <div className={`${styles.loginContainer} ${page1}`}>
-      <div className={`${styles.logo} logo`}>Your Matches (heart emoji)</div>
+      <div className={`${styles.logo} logo`}>Your Matches ❤️</div>
       <div className={`${styles.subtitle} subtitle`}>
         Talk and get to know your matches!
       </div>
@@ -241,19 +239,6 @@ const FriendsPage = () => {
       </div>
     </div>
   );
-  console.log(friends);
-  const floatingButton = (
-    <button
-      className={styles.addFriendButton}
-      onClick={() => {
-        setMatchMake(false);
-        openPage2(false);
-      }}
-    >
-      +
-    </button>
-  );
-
   const addFriendsPage = (
     <div className={`${styles.loginContainer} ${page2}`}>
       <div
@@ -319,7 +304,6 @@ const FriendsPage = () => {
     <div className={styles.full}>
       {friendsList}
       {addFriendsPage}
-      {floatingButton}
       <ToastContainer />
     </div>
   );

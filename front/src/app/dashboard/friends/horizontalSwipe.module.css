@@ -9,7 +9,7 @@
     justify-content: center;
     background-color: transparent;
     z-index: -1;
-    transition: transform 0.3s ease;
+    transition: transform 0.1s ease;
 }
 
 /* Button styles */
@@ -28,7 +28,7 @@
     cursor: pointer;
     text-transform: uppercase;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
 /* Remove button specific style (right swipe) */

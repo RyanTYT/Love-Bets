@@ -47,7 +47,7 @@ const FriendsPage = () => {
       try {
         const email = localStorage.getItem("email");
         const response = await fetch(
-          `http://${host}:5000/friends/list/${email}`,
+          `http://${host}:5000/friends/list?email=${email}`,
           {
             method: "GET",
             headers: {
@@ -142,7 +142,6 @@ const FriendsPage = () => {
       }
 
       const data = await response.json();
-      console.log("Action result:", data);
 
       if (isMatchMake) {
         toast.success(`Matchmade ${friend.name} successfully!`);
@@ -177,9 +176,9 @@ const FriendsPage = () => {
 
   const friendsList = (
     <div className={`${styles.loginContainer} ${page1}`}>
-      <div className={`${styles.logo} logo`}>Your Friends</div>
+      <div className={`${styles.logo} logo`}>Your Friends 👯</div>
       <div className={`${styles.subtitle} subtitle`}>
-        Talk to your friends or Matchmake them (winking emoji)
+        Talk to your friends or Matchmake them 😉
       </div>
       <div className={styles.friendsList}>
         {friends.length > 0 ? (
@@ -210,7 +209,6 @@ const FriendsPage = () => {
       </div>
     </div>
   );
-  console.log(friends);
   const floatingButton = (
     <button
       className={styles.addFriendButton}
