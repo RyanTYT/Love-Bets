@@ -2,6 +2,9 @@ from flask import Blueprint, jsonify, request
 from extensions import db
 from models import Bet, User, Match
 from datetime import datetime
+from sqlalchemy.orm import aliased
+from sqlalchemy import func, asc
+from .betting_functions import get_cum_data_for_bet
 
 bet_bp = Blueprint('bets', __name__)
 
@@ -10,43 +13,63 @@ bet_bp = Blueprint('bets', __name__)
 def create_bet():
     data = request.json
 
-    # Validate user and balance
-    user = User.query.get(data['user_id'])
-    if not user or user.balance < data['bet_amount']:
-        return jsonify({'error': 'Insufficient balance or invalid user'}), 400
-
-    # Deduct bet amount from user balance
-    user.balance -= data['bet_amount']
+    # # Validate user and balance
+    # user = User.query.get(data['user_id'])
+    # if not user or user.balance < data['bet_amount']:
+    #     return jsonify({'error': 'Insufficient balance or invalid user'}), 400
+    #
+    # # Deduct bet amount from user balance
+    # user.balance -= data['bet_amount']
 
     # Create the new bet
     new_bet = Bet(
-        user_id=data['user_id'],
-        match_id=data['match_id'],
+        better=data['better'],
+        user_id_1=data['user_id_1'],
+        user_id_2=data['user_id_2'],
         bet_amount=data['bet_amount'],
         bet_direction=data['bet_direction'],  # 'long' or 'short'
-        bet_time=datetime.utcnow(),
+        bet_time=datetime.now(),
+        bet_description=data['bet_description'],
         bet_end_time=datetime.fromisoformat(data['bet_end_time']),
-        bet_description=data.get('bet_description', '')
+        bet_outcome=data['bet_outcome'],
+        popular=data['popular']
     )
     db.session.add(new_bet)
     db.session.commit()
 
     return jsonify({'message': 'Bet created successfully'}), 201
 
-# Get all bets
-@bet_bp.route('/get_all', methods=['GET'])
-def get_all_bets():
-    bets = Bet.query.all()
-    return jsonify([{
-        'id': bet.id,
-        'user_id': bet.user_id,
-        'match_id': bet.match_id,
-        'bet_amount': bet.bet_amount,
-        'bet_direction': bet.bet_direction,
-        'bet_time': bet.bet_time,
-        'bet_end_time': bet.bet_end_time,
-        'bet_description': bet.bet_description
-    } for bet in bets])
+# @bet_bp.route('/place', methods=['POST'])
+# def place_bet():
+#     data = request.json
+#
+#     bet_exists = Bet.query.filter(
+#             Bet.better == data['better'] & 
+#             (
+#                 (Bet.user_id_1 == data['user_id_1'] & Bet.user_id_2 == data['user_id_2']) | 
+#                 (Bet.user_id_2 == data['user_id_1'] & Bet.user_id_1 == data['user_id_2'])
+#             )
+#         ).first()
+#     if bet_exists:
+#         bet_exists.
+#
+#     # Create the new bet
+#     new_bet = Bet(
+#         better=data['better'],
+#         user_id_1=data['user_id_1'],
+#         user_id_2=data['user_id_2'],
+#         bet_amount=data['bet_amount'],
+#         bet_direction=data['bet_direction'],  # 'long' or 'short'
+#         bet_time=datetime.now(),
+#         bet_description=data['bet_description'],
+#         bet_end_time=datetime.fromisoformat(data['bet_end_time']),
+#         popular=data['popular']
+#     )
+#     db.session.add(new_bet)
+#     db.session.commit()
+#
+#     return jsonify({'message': 'Bet created successfully'}), 201
+
 
 # Get all bets for a match
 @bet_bp.route('/match_bets/<int:match_id>', methods=['GET'])
@@ -185,7 +208,7 @@ def get_friends_bets():
         user2_info = user_dict.get(bet.user_id_2, {'name': 'Unknown', 'profile_pic': '../images/default_profile.png'})
 
         bets_data.append({
-            'id': bet.id,
+            'better': bet.better,
             'user_1': {'email': bet.user_id_1, **user1_info},
             'user_2': {'email': bet.user_id_2, **user2_info},
             'bet_amount': bet.bet_amount,
@@ -193,33 +216,208 @@ def get_friends_bets():
             'bet_time': bet.bet_time,
             'bet_end_time': bet.bet_end_time,
             'bet_description': bet.bet_description,
-            "cumulative_for": bet.cumulative_for,
-            "cumulative_against": bet.cumulative_against
+            'popular': bet.popular
         })
 
     return jsonify({'bets': bets_data}), 200
 
-#get single bet
-@bet_bp.route('/get/<int:bet_id>', methods=['GET'])
-def get_bet(bet_id):
-    bet = Bet.query.get(bet_id)
+# get single bet
+@bet_bp.route('/get', methods=['GET'])
+def get_bet():
+    user_id_1 = request.args.get("user_id_1")
+    user_id_2 = request.args.get("user_id_2")
 
-    users = User.query.filter(User.email.in_([bet.user_id_1, bet.user_id_2])).all()
-    user_dict = {user.email: {'name': user.name, 'profile_pic': user.profile_pic} for user in users}
-    user1_info = user_dict.get(bet.user_id_1, {'name': 'Unknown', 'profile_pic': '../images/default_profile.png'})
-    user2_info = user_dict.get(bet.user_id_2, {'name': 'Unknown', 'profile_pic': '../images/default_profile.png'})
-    if not bet:
+    User1 = aliased(User)
+    User2 = aliased(User)
+    bet_data = (Bet.query
+           .filter((Bet.user_id_1 == user_id_1) & (Bet.user_id_2 == user_id_2) & (Bet.bet_outcome == 0))
+           .join(User1, Bet.user_id_1 == User1.email)
+           .join(User2, Bet.user_id_2 == User2.email)
+           .add_columns(
+                Bet.better,
+                Bet.user_id_1,
+                Bet.user_id_2,
+                Bet.bet_amount,
+                Bet.bet_direction,
+                Bet.bet_time,
+                Bet.bet_end_time,
+                Bet.bet_description,
+                Bet.popular,
+                User1.name.label('user1_name'),
+                User1.profile_pic.label('user1_profile_pic'),
+                User2.name.label('user2_name'),
+                User2.profile_pic.label('user2_profile_pic')
+            )
+            .order_by(asc(Bet.bet_time))
+            .all()
+           )
+
+    if not bet_data:
         return jsonify({'error': 'Bet not found'}), 404
 
-    return jsonify({
-        'id': bet.id,
-        'user_id_1': {'email': bet.user_id_1, **user1_info},
-        'user_id_2': {'email': bet.user_id_2, **user2_info},
-        'bet_amount': bet.bet_amount,
-        'bet_direction': bet.bet_direction,
-        'bet_time': bet.bet_time,
-        'bet_end_time': bet.bet_end_time,
-        'bet_description': bet.bet_description,
-        "cumulative_for": bet.cumulative_for,
-        "cumulative_against": bet.cumulative_against
-    })
+    print(bet_data[0])
+    res = get_cum_data_for_bet(bet_data, user_id_1, user_id_2)
+
+    return jsonify(res), 200
+
+@bet_bp.route('/get-for-users', methods=['GET'])
+def get_bets_for_users():
+    # Extract the list of user emails from the query parameters
+    user_emails = request.args.getlist('user_emails', type=str)
+    print(user_emails)
+
+    if not user_emails:
+        return jsonify({'error': 'Missing or invalid parameter: user_emails[]'}), 400
+
+    # Aliases for the User table
+    User1 = aliased(User)
+    User2 = aliased(User)
+
+    # Query to get bets for the given user emails
+    user_bets = (
+        Bet.query
+        .filter((User1.email.in_(user_emails)) | (User2.email.in_(user_emails)))
+        .filter(Bet.bet_outcome == 0)
+        .join(User1, Bet.user_id_1 == User1.email)
+        .join(User2, Bet.user_id_2 == User2.email)
+        .add_columns(
+            Bet.better,
+            Bet.user_id_1,
+            Bet.user_id_2,
+            Bet.bet_amount,
+            Bet.bet_direction,
+            Bet.bet_time,
+            Bet.bet_end_time,
+            Bet.bet_description,
+            Bet.popular,
+            User1.name.label('user1_name'),
+            User1.profile_pic.label('user1_profile_pic'),
+            User2.name.label('user2_name'),
+            User2.profile_pic.label('user2_profile_pic')
+        )
+        .order_by(asc(Bet.user_id_1), asc(Bet.user_id_2), asc(Bet.bet_time))  # Order by user_id_1, user_id_2, and bet_time
+        .all()
+    )
+
+    if not user_bets:
+        return jsonify({'error': 'No bets found for the provided users'}), 404
+
+    # Group by user_id_1 + user_id_2
+    users_bets = {}
+    for user in user_bets:
+        key = (user.user_id_1, user.user_id_2)
+        if key not in users_bets:
+            users_bets[key] = []
+        users_bets[key].append(user)
+
+    result = [get_cum_data_for_bet(bet_group, key[0], key[1]) for key, bet_group in users_bets.items()]
+
+    return jsonify(result)
+
+# Get all bets
+@bet_bp.route('/get-all', methods=['GET'])
+def get_all_bets_grouped():
+    # Extract the list of user emails from the query parameters
+    user_emails = request.args.getlist('user_emails', type=str)
+    print(user_emails)
+
+    if not user_emails:
+        return jsonify({'error': 'Missing or invalid parameter: user_emails[]'}), 400
+
+    # Aliases for the User table
+    User1 = aliased(User)
+    User2 = aliased(User)
+
+    # Query to get bets for the given user emails
+    user_bets = (
+        Bet.query
+        .filter(Bet.bet_outcome == 0)
+        .join(User1, Bet.user_id_1 == User1.email)
+        .join(User2, Bet.user_id_2 == User2.email)
+        .add_columns(
+            Bet.better,
+            Bet.user_id_1,
+            Bet.user_id_2,
+            Bet.bet_amount,
+            Bet.bet_direction,
+            Bet.bet_time,
+            Bet.bet_end_time,
+            Bet.bet_description,
+            Bet.popular,
+            User1.name.label('user1_name'),
+            User1.profile_pic.label('user1_profile_pic'),
+            User2.name.label('user2_name'),
+            User2.profile_pic.label('user2_profile_pic')
+        )
+        .order_by(asc(Bet.user_id_1), asc(Bet.user_id_2), asc(Bet.bet_time))  # Order by user_id_1, user_id_2, and bet_time
+        .all()
+    )
+
+    if not user_bets:
+        return jsonify({'error': 'No bets found for the provided users'}), 404
+
+    # Group by user_id_1 + user_id_2
+    users_bets = {}
+    for user in user_bets:
+        key = (user.user_id_1, user.user_id_2)
+        if key not in users_bets:
+            users_bets[key] = []
+        users_bets[key].append(user)
+
+    result = [get_cum_data_for_bet(bet_group, key[0], key[1]) for key, bet_group in users_bets.items()]
+
+    return jsonify(result)
+# Get all bets
+@bet_bp.route('/get-all-popular', methods=['GET'])
+def get_all_bets_popular():
+    # Extract the list of user emails from the query parameters
+    user_emails = request.args.getlist('user_emails', type=str)
+    print(user_emails)
+
+    if not user_emails:
+        return jsonify({'error': 'Missing or invalid parameter: user_emails[]'}), 400
+
+    # Aliases for the User table
+    User1 = aliased(User)
+    User2 = aliased(User)
+
+    # Query to get bets for the given user emails
+    user_bets = (
+        Bet.query
+        .filter(Bet.popular == True)
+        .filter(Bet.bet_outcome == 0)
+        .join(User1, Bet.user_id_1 == User1.email)
+        .join(User2, Bet.user_id_2 == User2.email)
+        .add_columns(
+            Bet.better,
+            Bet.user_id_1,
+            Bet.user_id_2,
+            Bet.bet_amount,
+            Bet.bet_direction,
+            Bet.bet_time,
+            Bet.bet_end_time,
+            Bet.bet_description,
+            Bet.popular,
+            User1.name.label('user1_name'),
+            User1.profile_pic.label('user1_profile_pic'),
+            User2.name.label('user2_name'),
+            User2.profile_pic.label('user2_profile_pic')
+        )
+        .order_by(asc(Bet.user_id_1), asc(Bet.user_id_2), asc(Bet.bet_time))  # Order by user_id_1, user_id_2, and bet_time
+        .all()
+    )
+
+    if not user_bets:
+        return jsonify({'error': 'No bets found for the provided users'}), 404
+
+    # Group by user_id_1 + user_id_2
+    users_bets = {}
+    for user in user_bets:
+        key = (user.user_id_1, user.user_id_2)
+        if key not in users_bets:
+            users_bets[key] = []
+        users_bets[key].append(user)
+
+    result = [get_cum_data_for_bet(bet_group, key[0], key[1]) for key, bet_group in users_bets.items()]
+
+    return jsonify(result)

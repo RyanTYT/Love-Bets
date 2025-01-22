@@ -30,7 +30,7 @@ def create_match():
     ).first()
 
     if existing_match:
-        return jsonify({'message': 'Match already exists.', 'match_id': existing_match.id}), 200
+        return jsonify({'message': 'Match already exists.'}), 200
 
     # Create a new match
     new_match = Match(
@@ -46,7 +46,7 @@ def create_match():
     # Optionally notify users (e.g., via socket, email, etc.)
     notify_users_of_match(user1_id, user2_id)
 
-    return jsonify({'message': 'Match created successfully', 'match_id': new_match.id}), 201
+    return jsonify({'message': 'Match created successfully'}), 201
 
 # Create or check a match
 @match_bp.route('/matchmake', methods=['POST'])
@@ -67,7 +67,7 @@ def matchmake():
 
     if existing_match:
         existing_match.match_made = True
-        return jsonify({'message': 'Match already exists.', 'match_id': existing_match.id}), 200
+        return jsonify({'message': 'Match already exists.'}), 200
 
     # Create a new match
     new_match = Match(
@@ -84,7 +84,7 @@ def matchmake():
     # Optionally notify users (e.g., via socket, email, etc.)
     notify_users_of_match(user1_id, user2_id)
 
-    return jsonify({'message': 'Match created successfully', 'match_id': new_match.id}), 201
+    return jsonify({'message': 'Match created successfully'}), 201
 
 # Get all matches for a user
 @match_bp.route('/get_all/<string:email>', methods=['GET'])
@@ -106,7 +106,7 @@ def get_matches(email):
             continue
 
         match_list.append({
-            'id': match.id,
+            # 'id': match.id,
             'other_user': {
                 'name': other_user.name,
                 'email': other_user.email,
@@ -170,7 +170,7 @@ def check_match():
 
     if match:
         return jsonify({
-            'id': match.id,
+            # 'id': match.id,
             'user1_id': match.user1_id,
             'user2_id': match.user2_id,
             'matched_time': match.matched_time,
@@ -205,24 +205,19 @@ def wentOut():
         match.went_out = True
 
         # Find all bets with this match
-        print(user1_id)
-        print(user2_id)
         bets = Bet.query.filter(
             ((Bet.user_id_1 == user1_id) & (Bet.user_id_2 == user2_id)) |
             ((Bet.user_id_2 == user2_id) & (Bet.user_id_1 == user1_id))
         ).all()
         losers_pot = sum([i.bet_amount for i in bets if i.bet_direction == 0])
         num_winners = len([i for i in bets if i.bet_direction == 1])
-        print(bets)
         for bet in bets:
-            print(bet.better)
-            print(bet.bet_direction)
-            print(losers_pot / num_winners)
             user = User.query.get(bet.better)
             if bet.bet_direction == 1:
                 user.money_amount += losers_pot / num_winners
             else:
                 user.money_amount -= bet.bet_amount
+            bet.bet_outcome = 1
 
         db.session.commit()
         return jsonify({'message': 'Updated! Bets Sent out!'}), 200

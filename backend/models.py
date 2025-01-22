@@ -61,9 +61,9 @@ class Friend(db.Model):
 class Match(db.Model):
     __tablename__ = 'matches'
 
-    id = Column(Integer, primary_key=True)
-    user1_id = Column(String, ForeignKey('users.email'))
-    user2_id = Column(String, ForeignKey('users.email'))
+    # id = Column(Integer, primary_key=True)
+    user1_id = Column(String, ForeignKey('users.email'), primary_key=True)
+    user2_id = Column(String, ForeignKey('users.email'), primary_key=True)
     matched_time = Column(DateTime, nullable=False)
     is_active = Column(Boolean, default=True)
     went_out = Column(Boolean, default=False)
@@ -87,20 +87,21 @@ class Swipe(db.Model):
 class Bet(db.Model):
     __tablename__ = 'bets'
 
-    id = Column(Integer, primary_key=True)
-    better = Column(String, ForeignKey('users.email'))
-    user_id_1 = Column(String, ForeignKey('users.email'))
-    user_id_2 = Column(String, ForeignKey('users.email'))
+    # id = Column(Integer, primary_key=True)
+    better = Column(String, ForeignKey('users.email'), primary_key=True)
+    user_id_1 = Column(String, ForeignKey('users.email'), primary_key=True)
+    user_id_2 = Column(String, ForeignKey('users.email'), primary_key=True)
     bet_amount = Column(Float, nullable=False)
     bet_direction = Column(Boolean, nullable=False)  # True = Positive outcome, False = Negative
-    bet_time = Column(DateTime, nullable=False)
+    bet_time = Column(DateTime, nullable=False, primary_key=True)
     bet_description = Column(Text)
     bet_end_time = Column(DateTime, nullable=False)
-    bet_outcome = Column(String)
-    bet_category = Column(String)
+    bet_outcome = Column(Integer)
+    bet_category = Column(String) # TO BE CHANGED IN FUTURE
     user1 = relationship('User', foreign_keys=[user_id_1], back_populates='bets')
     user2 = relationship('User', foreign_keys=[user_id_2])
+    popular = Column(Boolean, nullable=False)  # True = Popular, False = Not Popular
     # Fields to store cumulative data
-    cumulative_for = Column(Text)  # JSON array for cumulative "for" bets
-    cumulative_against = Column(Text)  # JSON array for cumulative "against" bets
+    # cumulative_for = Column(Text)  # JSON array for cumulative "for" bets
+    # cumulative_against = Column(Text)  # JSON array for cumulative "against" bets
     

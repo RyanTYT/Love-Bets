@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from extensions import db
 from models import User, Friend
+from .betting_functions import get_cum_data_for_bet
 
 friend_bp = Blueprint('friends', __name__)
 
@@ -54,44 +55,29 @@ def remove_friend():
     return jsonify({'message': 'Friend removed successfully'})
 
 # List all friends for a user
-@friend_bp.route('/list/<string:user_id>', methods=['GET'])
-def list_friends(user_id):
-    friendships = Friend.query.filter(
-        (Friend.user_id_1 == user_id) | (Friend.user_id_2 == user_id)
-    ).all()
+@friend_bp.route('/list', methods=['GET'])
+def list_friends():
+    user_email = request.args.get("email")
+    if not user_email:
+        return jsonify({'error': 'Missing required parameter: user_id'}), 400
 
-    friends = []
-    for friendship in friendships:
-        friend_id = friendship.user_id_2 if friendship.user_id_1 == user_id else friendship.user_id_1
-        friend = User.query.get(friend_id)
-        if friend:
-            friends.append({
-                'name': friend.name,
-                'email': friend.email,
-                'profile_pic': friend.profile_pic
-            })
-    print(friendships)
+    # Query to retrieve all friends for the given user_id
+    friends = (
+        User.query
+        .join(Friend, (Friend.user_id_1 == user_email) & (Friend.user_id_2 == User.email) |
+                      (Friend.user_id_2 == user_email) & (Friend.user_id_1 == User.email))
+        .add_columns(User.name, User.email, User.profile_pic)
+        .all()
+    )
 
-    return jsonify(friends)
+    # Format the result
+    result = [
+        {
+            'name': friend.name,
+            'email': friend.email,
+            'profile_pic': friend.profile_pic
+        }
+        for friend in friends
+    ]
 
-# List all friends for a user
-@friend_bp.route('/list_bets/<string:user_id>', methods=['GET'])
-def get_friends_bet(user_id):
-    print(user_id)
-    # Fetch rows where the user is in either user_id_1 or user_id_2
-    friends_query = db.session.query(Friend).filter(
-        (Friend.user_id_1 == user_id) | (Friend.user_id_2 == user_id)
-    ).all()
-    if not friends_query:
-        return jsonify({'error': 'No friends found'}), 404
-
-    # Extract the friend's email for each pair
-    friends_list = []
-    for friend in friends_query:
-        # Add the opposite user in the pair
-        if friend.user_id_1 == user_id:
-            friends_list.append(friend.user_id_2)
-        else:
-            friends_list.append(friend.user_id_1)
-
-    return jsonify({'friends': friends_list}), 200
+    return jsonify(result), 200

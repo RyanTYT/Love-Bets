@@ -103,7 +103,7 @@ def get_matches(user_id):
     ).all()
 
     return jsonify([{
-        'id': match.id,
+        # 'id': match.id,
         'user1_id': match.user1_id,
         'user2_id': match.user2_id,
         'matched_time': match.matched_time,
